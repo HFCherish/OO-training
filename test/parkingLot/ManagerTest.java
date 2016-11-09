@@ -3,50 +3,36 @@ package parkingLot;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class ManagerTest {
-
     @Test
-    public void should_be_able_to_park_if_lot_available() {
-        int capacity = 1;
-
+    public void should_park_if_lot_available() {
         ParkingLot full = new ParkingLot(0);
-        ParkingLot target = new ParkingLot(capacity);
+        ParkingLot target = new ParkingLot(1);
 
-        Manager manager = new Manager(new DefaultLotSelector(), full, target);
-
+        Manager manager = new Manager(new DefaultParkingLotSelector(), full, target);
         manager.helpPark(new Car());
-
-        assertThat(target.remainedSize(), is(capacity - 1));
+        assertThat(target.remainedSize(), is(0));
     }
 
     @Test
-    public void should_not_be_able_to_park_if_lot_not_available() {
-
+    public void should_not_park_if_no_lot_available() {
         ParkingLot full = new ParkingLot(0);
-        ParkingLot full2 = new ParkingLot(0);
-
-        Manager manager = new Manager(new DefaultLotSelector(), full, full2);
-
+        ParkingLot full1 = new ParkingLot(0);
+        Manager manager = new Manager(new DefaultParkingLotSelector(), full, full1);
         assertThat(manager.helpPark(new Car()), is(false));
     }
 
     @Test
-    public void should_be_able_to_unpark_car() {
-        int capacity = 1;
-
+    public void should_unpark_after_park() {
         ParkingLot full = new ParkingLot(0);
-        ParkingLot target = new ParkingLot(capacity);
+        ParkingLot target = new ParkingLot(1);
 
-        Manager manager = new Manager(new DefaultLotSelector(), full, target);
-
+        Manager manager = new Manager(new DefaultParkingLotSelector(), full, target);
         Car car = new Car();
         manager.helpPark(car);
-
-        manager.helpLeave(car);
-
-        assertThat(target.remainedSize(), is(capacity));
-
+        manager.helpUnpark(car);
+        assertThat(target.remainedSize(), is(1));
     }
 }

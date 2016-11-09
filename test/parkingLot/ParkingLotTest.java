@@ -3,38 +3,30 @@ package parkingLot;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class ParkingLotTest {
-
     @Test
-    public void should_be_able_to_park_if_lot_available() {
-        int capacity = 1;
+    public void should_park_if_lot_available() {
+        ParkingLot parkingLot = new ParkingLot(1);
+        assertThat(parkingLot.remainedSize(), is(1));
 
-        ParkingLot target = new ParkingLot(capacity);
-
-        target.park(new Car());
-
-        assertThat(target.remainedSize(), is(capacity - 1));
+        parkingLot.park(new Car());
+        assertThat(parkingLot.remainedSize(), is(0));
     }
 
     @Test
-    public void should_not_be_able_to_park_if_lot_not_available() {
-        ParkingLot target = new ParkingLot(0);
-
-        assertThat(target.park(new Car()), is(false));
+    public void should_not_park_if_no_lot_available() {
+        ParkingLot parkingLot = new ParkingLot(0);
+        assertThat(parkingLot.park(new Car()), is(false));
     }
 
     @Test
-    public void should_be_able_to_unpark_car() {
-        int capacity = 1;
-
-        ParkingLot target = new ParkingLot(capacity);
-
+    public void should_unpark_after_park() {
+        ParkingLot parkingLot = new ParkingLot(1);
         Car car = new Car();
-        target.park(car);
-        target.leave(car);
-
-        assertThat(target.remainedSize(), is(capacity));
+        parkingLot.park(car);
+        parkingLot.unpark(car);
+        assertThat(parkingLot.remainedSize(), is(1));
     }
 }

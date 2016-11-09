@@ -1,10 +1,11 @@
 package parkingLot;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public class Manager {
-    protected ParkingLot[] parkingLots;
-    protected ParkingLotSelector selector;
+    ParkingLot[] parkingLots;
+    ParkingLotSelector selector;
 
     public Manager(ParkingLotSelector selector, ParkingLot... parkingLots) {
         this.parkingLots = parkingLots;
@@ -12,10 +13,10 @@ public class Manager {
     }
 
     public boolean helpPark(Car car) {
-        return selector.getParkingLot(parkingLots).map(lot -> lot.park(car)).orElse(false);
+        return selector.getParkingLot(parkingLots).map(parkingLot -> parkingLot.park(car)).orElse(false);
     }
 
-    public boolean helpLeave(Car car) {
-        return Arrays.stream(parkingLots).anyMatch(lot -> lot.leave(car));
+    public boolean helpUnpark(Car car) {
+        return Arrays.stream(parkingLots).anyMatch(parkingLot -> parkingLot.unpark(car));
     }
 }
