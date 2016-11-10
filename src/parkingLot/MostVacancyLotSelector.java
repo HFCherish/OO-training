@@ -3,10 +3,10 @@ package parkingLot;
 import java.util.Arrays;
 import java.util.Optional;
 
-public class MostVacancyLotSelector implements ParkingLotSelector {
+public class MostVacancyLotSelector implements ParkerSelector {
 
     @Override
-    public Optional<ParkingLot> getParkingLot(ParkingLot... parkingLots) {
-        return Arrays.stream(parkingLots).max(((o1, o2) -> o1.remainedSize() - o2.remainedSize())).filter(parkingLot -> !parkingLot.isFull());
+    public Optional<WithParkingCapability> selectParker(WithParkingCapability... parkingLots) {
+        return Arrays.stream(parkingLots).max(((o1, o2) -> o1.get(ParkingLot.Usage.USAGE) - o2.get(ParkingLot.Usage.USAGE))).filter(parkingLot -> !parkingLot.isFull());
     }
 }

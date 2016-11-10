@@ -9,15 +9,15 @@ public class ParkingLotTest {
     @Test
     public void should_park_if_lot_available() {
         ParkingLot parkingLot = new ParkingLot(1);
-        assertThat(parkingLot.remainedSize(), is(1));
+        assertThat(parkingLot.get(ParkingLot.Usage.USAGE), is(1));
 
         parkingLot.park(new Car());
-        assertThat(parkingLot.remainedSize(), is(0));
+        assertThat(parkingLot.get(ParkingLot.Usage.USAGE), is(0));
     }
 
     @Test
     public void should_not_park_if_no_lot_available() {
-        ParkingLot parkingLot = new ParkingLot(0);
+        WithParkingCapability parkingLot = new ParkingLot(0);
         assertThat(parkingLot.park(new Car()), is(false));
     }
 
@@ -27,6 +27,17 @@ public class ParkingLotTest {
         Car car = new Car();
         parkingLot.park(car);
         parkingLot.unpark(car);
-        assertThat(parkingLot.remainedSize(), is(1));
+        assertThat(parkingLot.get(ParkingLot.Usage.USAGE), is(1));
+    }
+
+    @Test
+    public void should_print_useage_with_right_info() {
+        ParkingLot parkingLot = new ParkingLot(2);
+        parkingLot.park(new Car());
+
+        IndentReport report = new IndentReport(1);
+        parkingLot.report(report);
+
+        assertThat(report.toString(), is("    ParkingLot: 1/2\n"));
     }
 }

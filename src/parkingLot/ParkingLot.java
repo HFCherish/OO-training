@@ -3,7 +3,7 @@ package parkingLot;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ParkingLot {
+public class ParkingLot implements WithParkingCapability {
     private final int capacity;
     private Set<Car> cars;
 
@@ -12,34 +12,36 @@ public class ParkingLot {
         this.cars = new HashSet<Car>(3);
     }
 
-    public static interface Useage<T> {
+    public static interface Usage<T> {
+        Usage<Integer> USAGE = (u, t) -> t-u;
+        Usage<Boolean> isFull = (u, t) -> t==u;
+
         T get(int used, int total);
     }
 
-
-    public int remainedSize() {
-        return capacity - cars.size();
+    @Override
+    public <T> T get(Usage<T> usage) {
+        return usage.get(cars.size(), capacity);
     }
 
-    protected double calcVacancyRate() {
-        if (capacity == 0) return 0;
-        return remainedSize() * 1.0 / capacity;
-    }
-
+    @Override
     public boolean park(Car car) {
         if (isFull()) return false;
         return cars.add(car);
     }
 
-    protected boolean isFull() {
-        return remainedSize() == 0;
+    @Override
+    public boolean isFull() {
+        return get(Usage.isFull);
     }
 
+    @Override
     public boolean unpark(Car car) {
         return cars.remove(car);
     }
 
-    public boolean containsCar(Car car) {
-        return cars.contains(car);
+    public void report(IndentReport report) {
+        report.reportParkingLots(cars.size(), capacity);
     }
+
 }
