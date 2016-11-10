@@ -18,7 +18,7 @@ public class ParkingLot {
 
     protected double calcVacancyRate() {
         if (capacity == 0) return 0;
-        return remainedSize() / capacity;
+        return remainedSize() * 1.0 / capacity;
     }
 
     public boolean park(Car car) {
