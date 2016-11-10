@@ -12,6 +12,11 @@ public class ParkingLot {
         this.cars = new HashSet<Car>(3);
     }
 
+    public static interface Useage<T> {
+        T get(int used, int total);
+    }
+
+
     public int remainedSize() {
         return capacity - cars.size();
     }
@@ -32,5 +37,9 @@ public class ParkingLot {
 
     public boolean unpark(Car car) {
         return cars.remove(car);
+    }
+
+    public boolean containsCar(Car car) {
+        return cars.contains(car);
     }
 }

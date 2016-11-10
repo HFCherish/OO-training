@@ -12,7 +12,7 @@ public class ManagerTest {
         ParkingLot target = new ParkingLot(1);
 
         Manager manager = new Manager(new DefaultParkingLotSelector(), full, target);
-        manager.helpPark(new Car());
+        manager.park(new Car());
         assertThat(target.remainedSize(), is(0));
     }
 
@@ -21,7 +21,7 @@ public class ManagerTest {
         ParkingLot full = new ParkingLot(0);
         ParkingLot full1 = new ParkingLot(0);
         Manager manager = new Manager(new DefaultParkingLotSelector(), full, full1);
-        assertThat(manager.helpPark(new Car()), is(false));
+        assertThat(manager.park(new Car()), is(false));
     }
 
     @Test
@@ -31,8 +31,8 @@ public class ManagerTest {
 
         Manager manager = new Manager(new DefaultParkingLotSelector(), full, target);
         Car car = new Car();
-        manager.helpPark(car);
-        manager.helpUnpark(car);
+        manager.park(car);
+        manager.unpark(car);
         assertThat(target.remainedSize(), is(1));
     }
 }
