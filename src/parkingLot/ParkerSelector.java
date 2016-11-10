@@ -1,7 +1,8 @@
 package parkingLot;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ParkerSelector {
-    Optional<WithParkingCapability> selectParker(WithParkingCapability... parkingLots);
+    Optional<WithParkingAbility> selectParker(List<WithParkingAbility> parkingLots);
 }

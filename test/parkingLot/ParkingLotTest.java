@@ -7,37 +7,33 @@ import static org.junit.Assert.*;
 
 public class ParkingLotTest {
     @Test
-    public void should_park_if_lot_available() {
-        ParkingLot parkingLot = new ParkingLot(1);
-        assertThat(parkingLot.get(ParkingLot.Usage.USAGE), is(1));
-
-        parkingLot.park(new Car());
-        assertThat(parkingLot.get(ParkingLot.Usage.USAGE), is(0));
+    public void should_able_to_park_if_lot_available() {
+        WithParkingAbility lot = new ParkingLot(1);
+        assertThat(lot.park(new Car()), is(true));
+        assertThat(lot.get(ParkingLot.Usage.isAvailable), is(false));
     }
 
     @Test
-    public void should_not_park_if_no_lot_available() {
-        WithParkingCapability parkingLot = new ParkingLot(0);
-        assertThat(parkingLot.park(new Car()), is(false));
+    public void should_not_able_to_park_if_lot_not_available() {
+        WithParkingAbility lot = new ParkingLot(1);
+        assertThat(lot.park(new Car()), is(true));
+        assertThat(lot.park(new Car()), is(false));
     }
 
     @Test
-    public void should_unpark_after_park() {
-        ParkingLot parkingLot = new ParkingLot(1);
+    public void should_able_to_unpark_after_parked() {
+        WithParkingAbility lot = new ParkingLot(1);
         Car car = new Car();
-        parkingLot.park(car);
-        parkingLot.unpark(car);
-        assertThat(parkingLot.get(ParkingLot.Usage.USAGE), is(1));
+        assertThat(lot.park(car), is(true));
+        assertThat(lot.unpark(car), is(true));
+        assertThat(lot.get(ParkingLot.Usage.isAvailable), is(true));
     }
 
     @Test
-    public void should_print_useage_with_right_info() {
-        ParkingLot parkingLot = new ParkingLot(2);
-        parkingLot.park(new Car());
+    public void should_print_usage() {
+        ParkingLot lot = new ParkingLot(1);
+        lot.park(new Car());
 
-        IndentReport report = new IndentReport(1);
-        parkingLot.report(report);
-
-        assertThat(report.toString(), is("    ParkingLot: 1/2\n"));
+        assertThat(lot.printUsageAsString(new Report(1)), is(Report.getIndent(1) + "ParkingLot: 0/1\n"));
     }
 }

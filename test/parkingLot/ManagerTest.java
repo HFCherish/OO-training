@@ -7,51 +7,48 @@ import static org.junit.Assert.*;
 
 public class ManagerTest {
     @Test
-    public void should_park_if_lot_available() {
-        WithParkingCapability full = new ParkingLot(0);
-        ParkingLot target = new ParkingLot(1);
-
-        WithParkingCapability manager = new Manager(new DefaultParkingLotSelector(), full, target);
-        manager.park(new Car());
-        assertThat(target.get(ParkingLot.Usage.USAGE), is(0));
+    public void should_help_park_if_has_lot_available() {
+        WithParkingAbility full = new ParkingLot(0);
+        WithParkingAbility available = new ParkingLot(1);
+        WithParkingAbility manager = new Manager(new DefaultParkingLotSelector(), full, available);
+        assertThat(manager.park(new Car()), is(true));
+        assertThat(available.get(ParkingLot.Usage.isAvailable), is(false));
     }
 
     @Test
-    public void should_not_park_if_no_lot_available() {
-        WithParkingCapability full = new ParkingLot(0);
-        WithParkingCapability full1 = new ParkingLot(0);
-        WithParkingCapability manager = new Manager(new DefaultParkingLotSelector(), full, full1);
+    public void should_not_able_to_park_if_no_lot_available() {
+        WithParkingAbility full = new ParkingLot(0);
+        WithParkingAbility available = new ParkingLot(1);
+        WithParkingAbility manager = new Manager(new DefaultParkingLotSelector(), full, available);
+        assertThat(manager.park(new Car()), is(true));
+        assertThat(available.get(ParkingLot.Usage.isAvailable), is(false));
         assertThat(manager.park(new Car()), is(false));
     }
 
     @Test
-    public void should_unpark_after_park() {
-        WithParkingCapability full = new ParkingLot(0);
-        ParkingLot target = new ParkingLot(1);
-
-        WithParkingCapability manager = new Manager(new DefaultParkingLotSelector(), full, target);
+    public void should_help_unpark_after_park() {
+        WithParkingAbility full = new ParkingLot(0);
+        WithParkingAbility available = new ParkingLot(1);
+        WithParkingAbility manager = new Manager(new DefaultParkingLotSelector(), full, available);
         Car car = new Car();
-        manager.park(car);
-        manager.unpark(car);
-        assertThat(target.get(ParkingLot.Usage.USAGE), is(1));
+        assertThat(manager.park(car), is(true));
+        assertThat(manager.unpark(car), is(true));
+        assertThat(available.get(ParkingLot.Usage.isAvailable), is(true));
     }
 
     @Test
-    public void should_print_useage_with_right_indent() {
-        WithParkingCapability defaultManager = new Manager(new DefaultParkingLotSelector(), new ParkingLot(1));
-        WithParkingCapability mostVacancyManager = new Manager(new MostVacancyLotSelector(), new ParkingLot(1));
-        ParkerSelector selector = new DefaultManagerSelector();
+    public void should_print_usage() {
+        ParkingLot full_lot = new ParkingLot(1);
+        full_lot.park(new Car());
+        ParkingLot available_lot = new ParkingLot(1);
+        Manager full_manager = new Manager(new DefaultParkingLotSelector(), full_lot);
+        Manager available_manager = new Manager(new DefaultParkingLotSelector(), available_lot);
+        Manager higherManager = new Manager(new ManagerSelector(), full_manager, available_manager);
 
-        WithParkingCapability manager = new Manager(selector, defaultManager, mostVacancyManager);
-        manager.park(new Car());
-
-        IndentReport report = new IndentReport();
-        manager.report(report);
-
-        assertThat(report.toString(), is("Parker:\n" +
-                PrinterHelper.getIndent(1) + "Parker:\n" +
-                PrinterHelper.getIndent(2) + "ParkingLot: 1/1\n" +
-                PrinterHelper.getIndent(1) + "Parker:\n" +
-                PrinterHelper.getIndent(2) + "ParkingLot: 0/1\n"));
+        assertThat(higherManager.printUsageAsString(new Report(0)), is("Parker:\n" +
+                Report.getIndent(1) + "Parker:\n" +
+                Report.getIndent(2) + "ParkingLot: 0/1\n" +
+                Report.getIndent(1) + "Parker:\n" +
+                Report.getIndent(2) + "ParkingLot: 1/1\n"));
     }
 }

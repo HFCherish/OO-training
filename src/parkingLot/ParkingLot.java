@@ -1,21 +1,19 @@
 package parkingLot;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
-public class ParkingLot implements WithParkingCapability {
+public class ParkingLot implements WithParkingAbility {
     private final int capacity;
-    private Set<Car> cars;
+    private ArrayList cars;
 
     public ParkingLot(int capacity) {
         this.capacity = capacity;
-        this.cars = new HashSet<Car>(3);
+        this.cars = new ArrayList(capacity);
     }
 
     public static interface Usage<T> {
-        Usage<Integer> USAGE = (u, t) -> t-u;
-        Usage<Boolean> isFull = (u, t) -> t==u;
-
+        Usage<Integer> remained = (used, total) -> total - used;
+        Usage<Boolean> isAvailable = (used, total) -> total > used;
         T get(int used, int total);
     }
 
@@ -26,13 +24,8 @@ public class ParkingLot implements WithParkingCapability {
 
     @Override
     public boolean park(Car car) {
-        if (isFull()) return false;
+        if(!get(Usage.isAvailable))  return false;
         return cars.add(car);
-    }
-
-    @Override
-    public boolean isFull() {
-        return get(Usage.isFull);
     }
 
     @Override
@@ -40,8 +33,8 @@ public class ParkingLot implements WithParkingCapability {
         return cars.remove(car);
     }
 
-    public void report(IndentReport report) {
-        report.reportParkingLots(cars.size(), capacity);
+    @Override
+    public String printUsageAsString(Report report) {
+        return report.reportToParkingLot(capacity-cars.size(), capacity);
     }
-
 }

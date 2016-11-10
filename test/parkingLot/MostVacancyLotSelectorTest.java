@@ -2,21 +2,18 @@ package parkingLot;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class MostVacancyLotSelectorTest {
     @Test
-    public void should_get_available_lot_with_most_vacancy() {
-        WithParkingCapability lot = new ParkingLot(1);
-        WithParkingCapability lot1 = new ParkingLot(2);
-
-        assertThat(new MostVacancyLotSelector().selectParker(lot, lot1).get(), is(lot1));
+    public void should_able_to_select_one_with_most_vacancy() {
+        WithParkingAbility lotWithLessVacancy = new ParkingLot(1);
+        WithParkingAbility lotWithMoreVacancy = new ParkingLot(2);
+        ParkerSelector selector = new MostVacancyLotSelector();
+        assertThat(selector.selectParker(Arrays.asList(lotWithLessVacancy, lotWithMoreVacancy)).isPresent(), is(true));
+        assertThat(selector.selectParker(Arrays.asList(lotWithLessVacancy, lotWithMoreVacancy)).get(), is(lotWithMoreVacancy));
     }
-
-    @Test
-    public void should_get_null_if_no_available() {
-        assertThat(new MostVacancyLotSelector().selectParker(new ParkingLot(0), new ParkingLot(0)).isPresent(), is(false));
-    }
-
 }

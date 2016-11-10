@@ -1,13 +1,11 @@
 package parkingLot;
 
-public interface WithParkingCapability {
+public interface WithParkingAbility {
     <T> T get(ParkingLot.Usage<T> usage);
 
     boolean park(Car car);
 
-    boolean isFull();
-
     boolean unpark(Car car);
 
-    void report(IndentReport report);
+    String printUsageAsString(Report report);
 }
